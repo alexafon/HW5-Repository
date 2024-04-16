@@ -1,20 +1,88 @@
-// alexafon_HW5_Q1.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
+///*************************************************************************
+//** Author : Alexander Afonso
+//** Program : hw5, q1
+//** Date Created : April 14, 2024
+//** Date Last Modified : April 14, 2024
+//*************************************************************************/
 #include <iostream>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <queue>
+#include <deque>
+#include "listtools.h"
+using namespace std;
 
-int main()
-{
-    std::cout << "Hello World!\n";
+struct Profile {
+    string fullname;
+    string state;
+    bool operator==(Profile rhs) {
+        if (fullname == rhs.fullname) return true; return false;
+    }
+    bool operator!=(Profile rhs) {
+        if (fullname != rhs.fullname) return true; return false;
+    }
+};
+ostream& operator<< (ostream &out, Profile &user) {
+    out << user.fullname << "-" << user.state;
+    return out;
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
+bool searchDeque(deque<Profile> &pq, Profile &president) {
+    for (auto it = pq.begin(); it != pq.end(); ++it) {
+        if (it->fullname == president.fullname) {
+            president = *it;
+            return true;
+        }
+    }
+    return false;
+}
 
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+int main() {
+	queue<Profile> pQueue;
+	deque<Profile> pDeque;
+    Profile temp;
+    string line;
+    string test = "truck	car";
+    string token;
+    stringstream ss(test);
+    getline(ss, token, '\t');
+    cout << token << endl;
+    getline(ss, token, '\t');
+    cout << token << endl;
+
+    ifstream file("presidentsWstates.txt");
+    if (file.is_open()) {
+        while (getline(file, line)) {
+            stringstream ss(line);
+            getline(ss, temp.fullname, '\t');
+            getline(ss, temp.state, '\t');
+        }
+    }
+    cout << "Printing queue members by using pop and front***********************" << endl;
+    cout << "Printing deque members with iterator***********************" << endl;
+   
+    file.clear();
+    file.seekg(0);
+
+    while (getline(file, line)) {
+        stringstream ss(line);
+        getline(ss, temp.fullname, '\t');
+        getline(ss, temp.state, '\t');
+        pDeque.push_back(temp);
+    }
+
+    for (auto it = pDeque.begin(); it != pDeque.end(); ++it) {
+        cout << *it << endl;
+    }
+	cout << "Printing deque members with indices***********************" << endl;
+	//input any former president name to generate response
+    temp.fullname = "Donald John Trump";
+    if (searchDeque(pDeque, temp)) {
+        cout << "president found:" << temp << endl;
+    }
+    else {
+        cout << "president not found: " << temp << endl;
+    }
+    return 0;
+}
